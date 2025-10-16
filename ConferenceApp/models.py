@@ -32,14 +32,29 @@ class Conference(models.Model):
     end_date=models.DateField()
     created_at=models.DateTimeField(auto_now_add=True) 
     updated_at=models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return f"la conference a comme titre {self.name}"
     def clean(self):
-        if self.start_date >self.end_date :
-            raise ValidationError("la date de debut doit etre inferieur à la date fin")
+        if self.start_date and self.end_date :
+            if self.start_date >self.end_date :
+                raise ValidationError("la date de debut doit etre inferieur à la date fin")
 
 def validate_keywords(keywords):
-    mots = [mot.strip() for mot in keywords.split(',') if mot.strip()]
+    
+    mots_bruts = keywords.split(',')
+
+    
+    mots = []
+    for mot in mots_bruts:
+        mot_nettoye = mot.strip()   
+        if mot_nettoye:             
+            mots.append(mot_nettoye)
+
+    
     if len(mots) > 10:
         raise ValidationError("Vous ne pouvez pas avoir plus de 10 mots-clés.")
+
+
 
 class Submission(models.Model):
     submission_id=models.CharField(max_length=255,primary_key=True,unique=True,editable=False,default=generate_submission_id)
@@ -61,9 +76,9 @@ class Submission(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE,related_name="submissions")
     conference=models.ForeignKey(Conference,on_delete=models.CASCADE,related_name="submissions")
     def clean(self):
-    
-        if self.conference and self.conference.start_date < timezone.now().date():
-            raise ValidationError({"conference": "Vous ne pouvez pas soumettre pour une conférence déjà commencée ou passée."})
+        if self.submission_date :
+            if self.conference and self.conference.start_date <= timezone.now().date() and self.conference.start_date and self.conference.end_date:
+                raise ValidationError({"conference": "Vous ne pouvez pas soumettre pour une conférence déjà commencée ou passée."})
 
         
         if self.user: 

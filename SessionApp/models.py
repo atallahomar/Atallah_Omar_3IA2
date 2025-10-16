@@ -24,8 +24,7 @@ class Session(models.Model):
     def clean(self):
         self.validate_session_day()
         self.validate_time()
-        self.validate_room()
-
+        
     def validate_session_day(self):
         if self.conference:
             if not (self.conference.start_date <= self.session_day <= self.conference.end_date):
