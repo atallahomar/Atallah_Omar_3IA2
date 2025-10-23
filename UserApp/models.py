@@ -31,13 +31,15 @@ class User(AbstractUser):
     nationality=models.CharField(max_length=255)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
-    def save(self,*args,**kwargs):
-        if not self.user_id:
-            newid=generate_user_id()
+    def save(self, *args, **kwargs):
+    # Ne générer un user_id que si on crée un nouvel utilisateur
+        if not self.pk:  # nouveau utilisateur
+            newid = generate_user_id()
             while User.objects.filter(user_id=newid).exists():
-                newid=generate_user_id()
-            self.user_id=newid
-        super().save(*args,**kwargs)
+                newid = generate_user_id()
+            self.user_id = newid
+        super().save(*args, **kwargs)
+
 
 class OrganizingComitee(models.Model):
     comitee_role=models.CharField(max_length=255,choices=[("chair","chair"),("co_chair","co_chair")])

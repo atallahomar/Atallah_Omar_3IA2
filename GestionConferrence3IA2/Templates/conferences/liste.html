@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des conférences</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        a, button {
+            padding: 6px 12px;
+            margin: 2px;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        a {
+            color: white;
+        }
+
+        a.details {
+            background-color: #2196F3;
+        }
+
+        a.add {
+            background-color: #4CAF50;
+        }
+
+        a.edit {
+            background-color: #FF9800;
+        }
+
+        button.delete {
+            background-color: #f44336;
+            color: white;
+        }
+
+        button.delete:hover, a:hover {
+            opacity: 0.8;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+
+<h1>La liste des conférences</h1>
+
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Theme</th>
+        <th>Date de conférences</th>
+        <th>Actions</th>
+    </tr>
+
+    {% for c in liste %}
+    <tr>
+        <td>{{ c.name }}</td>
+        <td>{{ c.theme }}</td>
+        <td>{{ c.start_date }} - {{ c.end_date }}</td>
+        <td class="actions">
+            <a href="{% url 'conference_details' c.pk %}" class="details">Détails</a>
+            <a href="{% url 'conference_add' %}" class="add">Ajouter</a>
+            <a href="{% url 'conference_edit' c.pk %}" class="edit">Modifier</a>
+            <form action="{% url 'conference_delete' c.pk %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="delete" onclick="return confirm('Voulez-vous vraiment supprimer cette conférence ?');">
+                    Supprimer
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
