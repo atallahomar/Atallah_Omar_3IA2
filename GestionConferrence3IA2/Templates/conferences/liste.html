@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Liste des conférences</title>
     <style>
+        /* Votre CSS reste inchangé */
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -13,6 +14,24 @@
         h1 {
             text-align: center;
             color: #333;
+        }
+
+        .add-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        a.add {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        a.add:hover {
+            opacity: 0.8;
         }
 
         table {
@@ -52,20 +71,14 @@
             font-size: 0.9rem;
         }
 
-        a {
-            color: white;
-        }
-
         a.details {
             background-color: #2196F3;
-        }
-
-        a.add {
-            background-color: #4CAF50;
+            color: white;
         }
 
         a.edit {
             background-color: #FF9800;
+            color: white;
         }
 
         button.delete {
@@ -88,6 +101,11 @@
 
 <h1>La liste des conférences</h1>
 
+<!-- Bouton Ajouter placé au-dessus du tableau -->
+<div class="add-container">
+    <a href="{% url 'conference_add' %}" class="add">Ajouter une nouvelle conférence</a>
+</div>
+
 <table>
     <tr>
         <th>Title</th>
@@ -102,8 +120,8 @@
         <td>{{ c.theme }}</td>
         <td>{{ c.start_date }} - {{ c.end_date }}</td>
         <td class="actions">
+            <!-- Supprimer le bouton "Ajouter" de cette section -->
             <a href="{% url 'conference_details' c.pk %}" class="details">Détails</a>
-            <a href="{% url 'conference_add' %}" class="add">Ajouter</a>
             <a href="{% url 'conference_edit' c.pk %}" class="edit">Modifier</a>
             <form action="{% url 'conference_delete' c.pk %}" method="post" style="display:inline;">
                 {% csrf_token %}

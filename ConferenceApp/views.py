@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render , redirect
+
 from .models import Conference
 from django.views.generic import ListView , DetailView , CreateView , DeleteView , UpdateView
 from django.urls import reverse_lazy
