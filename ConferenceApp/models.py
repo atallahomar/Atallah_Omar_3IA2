@@ -76,19 +76,30 @@ class Submission(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE,related_name="submissions")
     conference=models.ForeignKey(Conference,on_delete=models.CASCADE,related_name="submissions")
     def clean(self):
-        if self.submission_date :
-            if self.conference and self.conference.start_date <= timezone.now().date() and self.conference.start_date and self.conference.end_date:
-                raise ValidationError({"conference": "Vous ne pouvez pas soumettre pour une conférence déjà commencée ou passée."})
-
+        keyword_list=[]
+        if self.keywords :
+            for k in self.keywords.split(",") :
+                if k:
+                    keyword_list.append(k)
+        if len(keyword_list) > 10:
+            raise ValidationError({"keywords": "Vous ne pouvez pas saisir plus de 10 mots-clés."})
         
-        if self.user: 
-            submissions_today = Submission.objects.filter(
+        if self.submission_date and self.conference.start_date:
+            if self.conference.start_date < timezone.now().date():
+                raise ValidationError("La soumission ne peut être faite que pour des conférences à venir.")
+            
+        if self.user_id:
+            submission=Submission.objects.filter(
                 user=self.user,
                 submission_date=timezone.now().date()
-            ).exclude(submission_id=self.submission_id).count()
+            ).count()
+            if submission>3:
+                raise ValidationError("Vous ne pouvez pas soumettre plus de 3 conférences par jour.")
 
-            if submissions_today >= 3:
-                raise ValidationError({"user": "Vous ne pouvez pas soumettre plus de 3 conférences par jour."})
-
-
-
+def save(self,*args,**kwargs):
+    if not self.submission_id:
+        newid=generate_submission_id()
+        while Submission.objects.filter(submission_id=newid).exists():
+            newid=generate_submission_id()
+        self.submission_id=newid
+    super().save(*args,**kwargs)
