@@ -1,0 +1,14 @@
+{
+    "servers": {
+        "sayHello": {
+            "type": "stdio",
+            "command": "C:\\Users\\Atallah\\.local\\bin\\uv.exe",
+            "args": [
+                "run",
+                "main.py",
+            ],
+            "env": {}
+        }
+    }
+
+}
