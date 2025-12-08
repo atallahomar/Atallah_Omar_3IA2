@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h1>La liste des conférences</h1>
-   {% if user.is_authenticated  and user.role == "commitee" %} 
+   {% if user.is_authenticated   %} 
 <a href="{% url 'conference_add'  %}">Ajouter une conférence</a>
  {% endif %}
 <table border="1">
@@ -14,7 +14,8 @@
         <td>{{c.theme}}</td>
         <td>{{c.start_date}} - {{c.end_date}}</td>
         <td><a href="{% url 'conference_details' c.pk %}">Détails</a>
-            {% if user.is_authenticated  and user.role == "commitee" %}
+        <td><a href="{% url 'sessions_details' c.pk %}">Détails</a>
+            {% if user.is_authenticated  %}
         <a href="{% url 'conference_update' c.pk %}">Update</a>
      <a href="{% url 'conference_delete' c.pk %}">Supprimer</a></td>
      {% endif %}

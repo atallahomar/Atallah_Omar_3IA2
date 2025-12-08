@@ -8,15 +8,12 @@ from django.http import HttpResponseForbidden
 # Create your views here.
 
 
-def list_conferences(request):
-    conferences_list=Conference.objects.all()
-    """retour : liste + page """
-    return render(request,"conferences/liste.html", {"liste":conferences_list})
 
 class ConferenceList(ListView):
     model=Conference
     context_object_name="liste"
     template_name="conferences/liste.html"
+    ordering = ["start_date"]
 
 class ConferenceDetails(DetailView):
     model=Conference
